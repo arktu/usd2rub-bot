@@ -1,0 +1,1 @@
+# usd2rub-bot
