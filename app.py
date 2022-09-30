@@ -13,8 +13,10 @@ bot = telebot.TeleBot(TELEBOT_TOKEN)
 def help(message: telebot.types.Message):
     bot.send_message(message.chat.id, "Чтобы начать работу, введите команду боту в формате:\n\
 <имя валюты> <в какую валюту перевести (по умолчанию - рубль)> <количество переводимой валюты (по умолчанию - 1)>.\n\n\
-Примеры: \nбиткоин доллар 0.1\nдоллар 10\nевро доллар\nюань\n\n\
-Чтобы узнать доступные валюты, используйте команду /values")
+Примеры:\nбиткоин доллар 0.1\nдоллар 10\nевро доллар\nюань\n\n\
+Другие команды:\n\
+/values - узнать доступные валюты \n\
+/help - вывести эту информацию - ")
 
 
 # обработчик для команды values
@@ -36,7 +38,7 @@ def convert(message: telebot.types.Message):
     # перевод из одинаковой валюты можно не считать ошибкой
     # если параметров более чем 3, то ошибка не возникает, лишние параметры просто игнорируются
     # по умолчанию тип итоговой валюты - рубль, а количество валюты - 1, т.е. эти параметры можно не указывать
-    # если вторым параметром идет число, то воспринимаем его как количество
+    # если вторым параметром идет число, то воспринимаем его как amount
     try:
         params = message.text.split(' ') # base quote amount
 
@@ -45,7 +47,7 @@ def convert(message: telebot.types.Message):
 
         base = params[0]  # валюта из которой нужно конвертировать
         quote = 'рубль'  # валюта в которую нужно конвертировать
-        amount = 1  # количечтво конвертируемой валюты
+        amount = 1  # количество конвертируемой валюты
 
         # если всего 2 параметра, то второй параметр может быть как валютой, так и количеством
         if len(params) == 2:
@@ -59,8 +61,9 @@ def convert(message: telebot.types.Message):
             amount = params[2]
 
         total_quote = CryptoConverter.get_price(base, quote, amount)
+        total_quote = round(total_quote, 2)
 
-# исключения наших обработциков
+# исключения от обработчиков
     except ConvertionException as error:
         bot.send_message(message.chat.id, str(error))
 
@@ -69,8 +72,6 @@ def convert(message: telebot.types.Message):
         bot.send_message(message.chat.id, 'Произошла внутренняя ошибка при выполнении конвертации! ' + error)
 
     else:
-        total_quote = round(total_quote, 2)
-
         text = f"{amount} {base} = {total_quote} {quote}"
         bot.send_message(message.chat.id, text)
 
