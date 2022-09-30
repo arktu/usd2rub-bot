@@ -4,7 +4,7 @@ from config import TELEBOT_TOKEN, currencies
 from extensions import get_number, ConvertionException, CryptoConverter
 
 
-# получаем ссылку бот
+# получаем ссылку на бот
 bot = telebot.TeleBot(TELEBOT_TOKEN)
 
 
