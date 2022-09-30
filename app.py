@@ -38,27 +38,27 @@ def convert(message: telebot.types.Message):
     # по умолчанию тип итоговой валюты - рубль, а количество валюты - 1, т.е. эти параметры можно не указывать
     # если вторым параметром идет число, то воспринимаем его как количество
     try:
-        params = message.text.split(' ')
+        params = message.text.split(' ') # base quote amount
 
         if not len(params):
             raise ConvertionException('Не указан тип валюты')
 
-        quote = params[0]
-        base = 'рубль'
-        amount = 1
+        base = params[0]  # валюта из которой нужно конвертировать
+        quote = 'рубль'  # валюта в которую нужно конвертировать
+        amount = 1  # количечтво конвертируемой валюты
 
         # если всего 2 параметра, то второй параметр может быть как валютой, так и количеством
         if len(params) == 2:
             if get_number(params[1]) is False:
-                base = params[1]
+                quote = params[1]
             else:
                 amount = params[1]
 
         if len(params) >= 3:
-            base = params[1]
+            quote = params[1]
             amount = params[2]
 
-        total_base = CryptoConverter.get_price(base, quote, amount)
+        total_quote = CryptoConverter.get_price(base, quote, amount)
 
 # исключения наших обработциков
     except ConvertionException as error:
@@ -66,12 +66,12 @@ def convert(message: telebot.types.Message):
 
 # остальные исключения
     except Exception as error:
-        bot.send_message(message.chat.id, 'Произошла внутренняя ошибка при выполнении конвертации! ') #  + error
+        bot.send_message(message.chat.id, 'Произошла внутренняя ошибка при выполнении конвертации! ' + error)
 
     else:
-        total_base = round(total_base, 2)
+        total_quote = round(total_quote, 2)
 
-        text = f"{amount} {quote} = {total_base} {base}"
+        text = f"{amount} {base} = {total_quote} {quote}"
         bot.send_message(message.chat.id, text)
 
 
