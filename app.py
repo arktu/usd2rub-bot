@@ -1,6 +1,7 @@
 import telebot
 
 from config import TELEBOT_TOKEN, currencies
+from config import MSG_ERR_CURRENCY_NOT_SPECIFIED, MSG_ERR_INTERNAL_ERROR
 from extensions import get_number, ConvertionException, CryptoConverter
 
 
@@ -11,12 +12,7 @@ bot = telebot.TeleBot(TELEBOT_TOKEN)
 # обработчик для команд start и help
 @bot.message_handler(commands=['start', 'help'])
 def help(message: telebot.types.Message):
-    bot.send_message(message.chat.id, "Чтобы начать работу, введите команду боту в формате:\n\
-<имя валюты> <в какую валюту перевести (по умолчанию - рубль)> <количество переводимой валюты (по умолчанию - 1)>.\n\n\
-Примеры:\nбиткоин доллар 0.1\nдоллар 10\nевро доллар\nюань\n\n\
-Другие команды:\n\
-/values - узнать доступные валюты \n\
-/help - вывести эту информацию - ")
+    bot.send_message(message.chat.id, MSG_HELP)
 
 
 # обработчик для команды values
@@ -43,7 +39,7 @@ def convert(message: telebot.types.Message):
         params = message.text.split(' ') # base quote amount
 
         if not len(params):
-            raise ConvertionException('Не указан тип валюты')
+            raise ConvertionException(MSG_ERR_CURRENCY_NOT_SPECIFIED)
 
         base = params[0]  # валюта из которой нужно конвертировать
         quote = 'рубль'  # валюта в которую нужно конвертировать
@@ -69,7 +65,7 @@ def convert(message: telebot.types.Message):
 
 # остальные исключения
     except Exception as error:
-        bot.send_message(message.chat.id, 'Произошла внутренняя ошибка при выполнении конвертации! ' + error)
+        bot.send_message(message.chat.id, MSG_ERR_INTERNAL_ERROR + "\n" + error)
 
     else:
         text = f"{amount} {base} = {total_quote} {quote}"
