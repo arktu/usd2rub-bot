@@ -1,7 +1,7 @@
 import telebot
 
 from config import TELEBOT_TOKEN, currencies
-from config import MSG_ERR_CURRENCY_NOT_SPECIFIED, MSG_ERR_INTERNAL_ERROR
+from config import MSG_HELP, MSG_ERR_CURRENCY_NOT_SPECIFIED, MSG_ERR_INTERNAL_ERROR
 from extensions import get_number, ConvertionException, CryptoConverter
 
 
