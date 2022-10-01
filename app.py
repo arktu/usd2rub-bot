@@ -41,20 +41,20 @@ def convert(message: telebot.types.Message):
         if not len(params):
             raise ConvertionException(MSG_ERR_CURRENCY_NOT_SPECIFIED)
 
-        base = params[0]  # валюта из которой нужно конвертировать
+        base = str.lower(params[0])  # валюта из которой нужно конвертировать
         quote = 'рубль'  # валюта в которую нужно конвертировать
         amount = 1  # количество конвертируемой валюты
 
         # если всего 2 параметра, то второй параметр может быть как валютой, так и количеством
         if len(params) == 2:
             if get_number(params[1]) is False:
-                quote = params[1]
+                quote = str.lower(params)
             else:
                 amount = params[1]
 
         # стандартный вариант - 3 параметра
         if len(params) >= 3:
-            quote = params[1]
+            quote = str.lower(params[1])
             amount = params[2]
 
         # узнаем искомую стоимость
