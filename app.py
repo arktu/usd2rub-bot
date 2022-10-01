@@ -52,22 +52,25 @@ def convert(message: telebot.types.Message):
             else:
                 amount = params[1]
 
+        # стандартный вариант - 3 параметра
         if len(params) >= 3:
             quote = params[1]
             amount = params[2]
 
+        # узнаем искомую стоимость
         total_quote = CryptoConverter.get_price(base, quote, amount)
-        total_quote = round(total_quote, 2)
+#        total_quote = round(total_quote, 2)
 
-# исключения от обработчиков
+    # исключения от наших обработчиков
     except ConvertionException as error:
         bot.send_message(message.chat.id, str(error))
 
-# остальные исключения
+    # остальные исключения
     except Exception as error:
         bot.send_message(message.chat.id, MSG_ERR_INTERNAL_ERROR + "\n" + error)
 
     else:
+        # формируем и отправляем пользователю информацию о искомой стоимости валюты
         text = f"{amount} {base} = {total_quote} {quote}"
         bot.send_message(message.chat.id, text)
 
