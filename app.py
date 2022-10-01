@@ -48,7 +48,7 @@ def convert(message: telebot.types.Message):
         # если всего 2 параметра, то второй параметр может быть как валютой, так и количеством
         if len(params) == 2:
             if get_number(params[1]) is False:
-                quote = str.lower(params)
+                quote = str.lower(params[1])
             else:
                 amount = params[1]
 
